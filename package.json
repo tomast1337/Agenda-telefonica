@@ -4,9 +4,10 @@
   "description": "Agenda Telefonica escrita em Typescript usando NestJS e React",
   "main": "index.js",
   "scripts": {
-    "backend": "cd backend && yarn run start",
+    "backend": "cd backend && yarn run start:dev",
     "frontend": "cd frontend && yarn start",
-    "dev": "concurrently \"yarn backend\" \"yarn frontend\""
+    "dev": "concurrently \"yarn backend\" \"yarn frontend\"",
+    "format":"cd backend && yarn run format && cd ../frontend && yarn run format"
   },
   "author": "Nicolas Vycas Nery",
   "license": "ISC",
