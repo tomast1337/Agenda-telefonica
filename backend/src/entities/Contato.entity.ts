@@ -25,10 +25,10 @@ export class Contato {
     telefone: string;
     @Column({
         length: 500,
-        nullable: false,
-        default: 'Não informado',
+        nullable: true,
+        default: null,
     })
-    imagem: string;
+    imagem: string | null;
     @ManyToOne(() => Agenda, (agenda) => agenda.contatos)
     agenda: Agenda;
 }
