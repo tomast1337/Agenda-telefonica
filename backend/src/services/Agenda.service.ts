@@ -1,0 +1,57 @@
+import { Injectable, Inject } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { Agenda } from '../entities/Agenda.entity';
+
+@Injectable()
+export class AgendaService {
+    constructor(
+        @Inject('AGENDA_REPOSITORY')
+        private agendaRepository: Repository<Agenda>,
+    ) {}
+
+    async findAll(): Promise<Agenda[]> {
+        return await this.agendaRepository.find();
+    }
+
+    async create(agenda: Agenda): Promise<Agenda> {
+        return await this.agendaRepository.save(agenda);
+    }
+
+    async update(agenda: Agenda): Promise<Agenda> {
+        const toUpdate = await this.agendaRepository.findOne({
+            where: { id: agenda.id },
+        });
+        if (!toUpdate) {
+            throw new Error('Agenda not found');
+        }
+        toUpdate.descricao = agenda.descricao;
+        toUpdate.nome = agenda.nome;
+        return await this.agendaRepository.save(toUpdate);
+    }
+
+    async delete(id: number) {
+        const agenda = await this.agendaRepository.findOne({
+            where: { id },
+        });
+        // delete all contacts from this agenda
+        await this.agendaRepository
+            .createQueryBuilder()
+            .relation(Agenda, 'contatos')
+            .of(agenda)
+            .remove(agenda.contatos);
+        return await this.agendaRepository.remove(agenda);
+    }
+
+    async findOneById(id: number): Promise<Agenda> {
+        return await this.agendaRepository.findOne({
+            where: { id },
+        });
+    }
+
+    async findBySimilarName(nome: string): Promise<Agenda[]> {
+        return await this.agendaRepository
+            .createQueryBuilder('agenda')
+            .where('agenda.nome LIKE :nome', { nome: `%${nome}%` })
+            .getMany();
+    }
+}
