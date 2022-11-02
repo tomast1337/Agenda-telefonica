@@ -1,0 +1,16 @@
+{
+  "name": "agenda_telefonica",
+  "version": "1.0.0",
+  "description": "Agenda Telefonica escrita em Typescript usando NestJS e React",
+  "main": "index.js",
+  "scripts": {
+    "backend": "cd backend && yarn run start",
+    "frontend": "cd frontend && yarn start",
+    "dev": "concurrently \"yarn backend\" \"yarn frontend\""
+  },
+  "author": "Nicolas Vycas Nery",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^7.5.0"
+  }
+}
