@@ -85,4 +85,12 @@ export class ContatoService {
             .where('contato.id = :id', { id })
             .getOne();
     }
+
+    async updateImage(id: number, url: string) {
+        const contato = await this.contatoRepository.findOne({
+            where: { id },
+        });
+        contato.imagem = url;
+        return await this.contatoRepository.save(contato);
+    }
 }
