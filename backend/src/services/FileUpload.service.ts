@@ -28,7 +28,9 @@ export class FileUploadService {
             .promise();
         Logger.log(result);
         fs.unlinkSync(file.path); // Remove file from temp folder
-        Logger.log(`File ${file.originalname} uploaded to S3 and deleted form local storage`);
+        Logger.log(
+            `File ${file.originalname} uploaded to S3 and deleted form local storage`,
+        );
         return result.Location;
     }
 

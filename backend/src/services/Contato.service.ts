@@ -87,10 +87,13 @@ export class ContatoService {
     }
 
     async updateImage(id: number, url: string) {
-        const contato = await this.contatoRepository.findOne({
+        const toUpdate = await this.contatoRepository.findOne({
             where: { id },
         });
-        contato.imagem = url;
-        return await this.contatoRepository.save(contato);
+        if (!toUpdate) {
+            throw new Error('Contato not found');
+        }
+        toUpdate.imagem = url;
+        return await this.contatoRepository.save(toUpdate);
     }
 }

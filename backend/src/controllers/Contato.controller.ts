@@ -96,10 +96,13 @@ export class ContatoController {
         try {
             const url = await this.fileUploadService.uploadFile(file);
             try {
-                await this.contatoService.updateImage(idContato, url);
+                const contato = await this.contatoService.updateImage(
+                    idContato,
+                    url,
+                );
                 return response.status(200).json({
                     message: 'Image uploaded successfully',
-                    url,
+                    url: contato.imagem,
                 });
             } catch (error) {
                 return response
