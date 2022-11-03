@@ -15,7 +15,7 @@ export const EditarContatoPage = () => {
     const context: AppContextType = React.useContext(AppContext);
     const navigate = useNavigate();
     React.useEffect(() => {
-        document.title = `Editar Contato`;
+        document.title = `Detalhes Contato`;
         if (!context.AgendaSelecionada) {
             navigate('/');
         }
@@ -25,7 +25,6 @@ export const EditarContatoPage = () => {
         ).then((response) => {
             if (response.ok) {
                 response.json().then((contato) => {
-                    console.log(contato);
                     setId(contato.id);
                     setNome(contato.nome);
                     setEmail(contato.email);
@@ -37,7 +36,6 @@ export const EditarContatoPage = () => {
     }, []);
     const uploadImage = async (contatoId: number, file: File) => {
         const formData = new FormData();
-        console.log(file);
         formData.append('imagem', file);
         fetch(context.api + `/api/contatos/${contatoId}/imagem`, {
             method: 'PUT',

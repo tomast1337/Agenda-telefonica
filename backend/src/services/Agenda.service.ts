@@ -1,4 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { Contato } from '../entities/Contato.entity';
 import { Repository } from 'typeorm';
 import { Agenda } from '../entities/Agenda.entity';
 
@@ -7,6 +8,8 @@ export class AgendaService {
     constructor(
         @Inject('AGENDA_REPOSITORY')
         private agendaRepository: Repository<Agenda>,
+        @Inject('CONTATO_REPOSITORY')
+        private contatoRepository: Repository<Contato>,
     ) {}
 
     async findAll(): Promise<Agenda[]> {
@@ -36,25 +39,22 @@ export class AgendaService {
         const agenda = await this.agendaRepository.findOne({
             where: { id },
         });
-        // delete all contacts from this agenda
-        await this.agendaRepository
+        // delete all contacts where agendaId = id
+        await this.contatoRepository
             .createQueryBuilder()
-            .relation(Agenda, 'contatos')
-            .of(agenda)
-            .remove(agenda.contatos);
+            .delete()
+            .from(Contato)
+            .where('agendaId = :id', { id })
+            .execute();
+        // delete agenda
         return await this.agendaRepository.remove(agenda);
     }
 
     async findOneById(id: number): Promise<Agenda> {
-        return await this.agendaRepository.findOne({
-            where: { id },
-        });
-    }
-
-    async findBySimilarName(nome: string): Promise<Agenda[]> {
         return await this.agendaRepository
             .createQueryBuilder('agenda')
-            .where('agenda.nome LIKE :nome', { nome: `%${nome}%` })
-            .getMany();
+            .leftJoinAndSelect('agenda.contatos', 'contatos')
+            .where('agenda.id = :id', { id })
+            .getOne();
     }
 }

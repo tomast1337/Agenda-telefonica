@@ -22,17 +22,15 @@ const ContatoCard = (props: { contato: Contato }) => {
                 </div>
                 <div className="flex-auto p-6">
                     <div className="flex flex-col">
-                        <h1 className="flex-auto text-xl font-semibold">
+                        <h1 className="flex-auto text-xl m-3 font-semibold">
                             {contato.nome}
                         </h1>
-                        <p>{contato.email}</p>
-                        <p>{contato.telefone}</p>
                     </div>
                     <Link
                         className="bg-gray-300 rounded-md text-gray-600 hover:text-gray-700 hover:bg-gray-400 m-1 p-1"
                         to={`/agenda/${context.AgendaSelecionada?.id}/${contato.id}`}
                     >
-                        Editar Contato
+                        Ver detalhes ou Editar
                     </Link>
                 </div>
             </li>
@@ -60,7 +58,6 @@ export const AgendaPage = () => {
                         setContatos(data);
                     });
                 } else {
-                    console.log(response);
                     setError('Nem um Contato encontrado');
                 }
             })

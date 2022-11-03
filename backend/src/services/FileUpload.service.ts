@@ -35,12 +35,14 @@ export class FileUploadService {
     }
 
     /* Deletar arquivo do S3 */
-    async deleteFile(fileKey: string): Promise<void> {
+    async deleteFile(oldUrl: string): Promise<void> {
+        const fileKey = oldUrl.split('/').pop(); // Get file name from URL
         await this.s3
             .deleteObject({
                 Bucket: this.bucketName,
                 Key: fileKey,
             })
             .promise();
+        Logger.log(`File ${fileKey} deleted from S3`);
     }
 }

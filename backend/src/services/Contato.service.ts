@@ -40,42 +40,10 @@ export class ContatoService {
         });
     }
 
-    async findByName(nome: string): Promise<Contato[]> {
-        return await this.contatoRepository
-            .createQueryBuilder('contato')
-            .where('contato.nome LIKE :nome', { nome: `%${nome}%` })
-            .getMany();
-    }
-
-    async findByEmail(email: string): Promise<Contato[]> {
-        return await this.contatoRepository
-            .createQueryBuilder('contato')
-            .where('contato.email LIKE :email', { email: `%${email}%` })
-            .getMany();
-    }
-
     async findAllByAgendaId(agendaId: number) {
         return await this.contatoRepository
             .createQueryBuilder('contato')
             .where('contato.agendaId = :agendaId', { agendaId })
-            .getMany();
-    }
-
-    async findByTelefone(telefone: string): Promise<Contato[]> {
-        return await this.contatoRepository
-            .createQueryBuilder('contato')
-            .where('contato.telefone LIKE :telefone', {
-                telefone: `%${telefone}%`,
-            })
-            .getMany();
-    }
-
-    async findByPhone(telefone: string) {
-        return await this.contatoRepository
-            .createQueryBuilder('contato')
-            .where('contato.telefone LIKE :telefone', {
-                telefone: `%${telefone}%`,
-            })
             .getMany();
     }
 

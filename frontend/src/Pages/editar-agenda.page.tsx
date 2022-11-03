@@ -19,7 +19,6 @@ export const EditarAgendaPage = () => {
                 if (response.ok) {
                     response.json().then((data) => {
                         setAgenda(data);
-                        console.log(data);
                         setLoading(false);
                     });
                 }
@@ -42,7 +41,6 @@ export const EditarAgendaPage = () => {
                 if (response.ok) {
                     response.json().then((data) => {
                         setAgenda(data);
-                        console.log(data);
                         setLoading(false);
                         navigate(`/agenda/${id}`);
                     });
@@ -66,6 +64,7 @@ export const EditarAgendaPage = () => {
             })
             .catch((error) => {
                 setError(error.message);
+                console.log(error);
             });
     };
 
@@ -128,8 +127,7 @@ export const EditarAgendaPage = () => {
                                 className="font-sans text-gray-700 text-sm"
                                 htmlFor="n-contatos"
                             >
-                                {Agenda.quantContatos}
-                                contatos cadastrados nesta agenda
+                                {`${Agenda.quantContatos} contatos cadastrados nesta agenda`}
                             </label>
                             <button
                                 className="bg-gray-900 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md text-lg font-medium px-4 py-2 mt-4 w-fit-content"

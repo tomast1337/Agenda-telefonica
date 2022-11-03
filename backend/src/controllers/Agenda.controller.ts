@@ -5,7 +5,7 @@ import { AgendaService } from '../services/Agenda.service';
 
 @Controller('agenda')
 export class AgendaController {
-    constructor(private readonly agendaService: AgendaService) {}
+    constructor(private readonly agendaService: AgendaService) { }
     @Get()
     public async index(): Promise<AgendaInfo[]> {
         const agendas = await this.agendaService.findAll();
@@ -55,23 +55,28 @@ export class AgendaController {
     ): Promise<Response> {
         try {
             await this.agendaService.delete(request.params.id);
+            return response.status(200).json({
+                message: 'Agenda deleted successfully',
+            });
         } catch (error) {
             return response.status(404).json({ message: 'Agenda not found' });
         }
-        return response.status(200).json({
-            message: 'Agenda deleted successfully',
-        });
     }
 
     @Get(':id')
     public async findById(
         @Req() request: Request<{ id: number }>,
-        @Res() response: Response<Agenda | { message: string }>,
+        @Res() response: Response<AgendaInfo | { message: string }>,
     ): Promise<Response> {
         const agenda = await this.agendaService.findOneById(request.params.id);
         if (!agenda) {
             return response.status(404).json({ message: 'Agenda not found' });
         }
-        return response.status(200).json(agenda);
+        return response.status(200).json({
+            id: agenda.id,
+            nome: agenda.nome,
+            descricao: agenda.descricao,
+            quantContatos: agenda.contatos ? agenda.contatos.length : 0,
+        } as AgendaInfo);
     }
 }

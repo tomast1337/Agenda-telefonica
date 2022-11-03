@@ -148,73 +148,30 @@ export class ContatoController {
         @Res() response: Response<Contato | { message: string; url?: string }>,
     ): Promise<Response> {
         const { idContato } = request.params;
-        // Upload to S3
+        const { imagem } = await this.contatoService.findById(idContato); // Get current image
         try {
             const url = await this.fileUploadService.uploadFile(file);
+            if (imagem) {
+                await this.fileUploadService.deleteFile(imagem); // Delete current image
+            }
             try {
                 const contato = await this.contatoService.updateImage(
                     idContato,
                     url,
-                );
+                ); // Update image
                 return response.status(200).json({
                     message: 'Image uploaded successfully',
                     url: contato.imagem,
-                });
+                }); // Return new image
             } catch (error) {
                 return response
                     .status(500)
                     .json({ message: 'Error updating image' });
             }
         } catch (error) {
-            console.log(error);
             return response
                 .status(500)
                 .json({ message: 'Error uploading image' });
-        }
-    }
-
-    @Get('/nome/:nome')
-    async findByName(
-        @Req() request: Request<{ nome: string }>,
-        @Res() response: Response<Contato[] | { message: string }>,
-    ): Promise<Response> {
-        try {
-            const contatos = await this.contatoService.findByName(
-                request.params.nome,
-            );
-            return response.json(contatos);
-        } catch (error) {
-            return response.status(404).json({ message: error.message });
-        }
-    }
-
-    @Get('/telefone/:telefone')
-    async findByPhone(
-        @Req() request: Request<{ telefone: string }>,
-        @Res() response: Response<Contato[] | { message: string }>,
-    ): Promise<Response> {
-        try {
-            const contatos = await this.contatoService.findByPhone(
-                request.params.telefone,
-            );
-            return response.json(contatos);
-        } catch (error) {
-            return response.status(404).json({ message: error.message });
-        }
-    }
-
-    @Get('/email/:email')
-    async findByEmail(
-        @Req() request: Request<{ email: string }>,
-        @Res() response: Response<Contato[] | { message: string }>,
-    ): Promise<Response> {
-        try {
-            const contatos = await this.contatoService.findByEmail(
-                request.params.email,
-            );
-            return response.json(contatos);
-        } catch (error) {
-            return response.status(404).json({ message: error.message });
         }
     }
 }

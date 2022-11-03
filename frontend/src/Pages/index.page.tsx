@@ -8,7 +8,7 @@ export const AgendaDetail = (props: { agenda: Agenda }) => {
     const context: AppContextType = React.useContext(AppContext);
     const navigate = useNavigate();
     return (
-        <div className="flex flex-col font-sans rounded-md shadow-2xl bg-gray-100">
+        <div className="flex flex-col font-sans rounded-md shadow-2xl bg-gray-100 w-1/2 mx-auto">
             <div
                 onClick={() => {
                     context.AgendaSelecionada = agenda;
@@ -25,15 +25,6 @@ export const AgendaDetail = (props: { agenda: Agenda }) => {
                     {agenda.quantContatos} contatos
                 </p>
             </div>
-            <button
-                className="bg-gray-900 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md text-lg font-medium px-4 py-2 mt-4 w-fit-content"
-                onClick={() => {
-                    context.AgendaSelecionada = agenda;
-                    navigate(`/agenda/${agenda.id}/editar`);
-                }}
-            >
-                Editar
-            </button>
         </div>
     );
 };
