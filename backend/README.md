@@ -37,6 +37,22 @@
 docker run --name Agenda -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=agenda -p 3306:3306 -d mysql:latest
 ´´´
 
+e depois criar um arquivo dev.env na raiz do projeto com as seguintes variáveis:
+```ini
+HOST=localhost
+PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=root
+DATABASE=agenda
+```
+dentro desse mesmo arquivo, adicionar a variáveis de ambiente relacionadas amazon s3:
+```ini
+AWS_ACCESS_KEY_ID=<SEU ACCESS KEY>
+AWS_SECRET_ACCESS_KEY=<SEU ACCESS SECRET>
+AWS_REGION=<SIGLA DA SUA REGIÃO>
+AWS_S3_BUCKET=<BUCKET>
+```
+
 
 ## Instalação
 
