@@ -47,14 +47,14 @@ export class ContatoController {
 
     @Post()
     async create(
-        @Req() request: Request<Contato>,
+        @Req() request: Request<ContatoInfo>,
         @Res() response: Response<Contato>,
     ): Promise<Response> {
         const contato = new Contato();
         contato.nome = request.body.nome;
         contato.telefone = request.body.telefone;
         contato.agenda = new Agenda();
-        contato.agenda.id = request.body.agenda.id;
+        contato.agenda.id = request.body.agendaId;
         contato.imagem = null;
         contato.email = request.body.email;
         const contatoCreated = await this.contatoService.create(contato);
