@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { baseUrl } from '../variables';
 import { Agenda } from '../types';
 import { useNavigate, useParams } from 'react-router-dom';
+import { AppContext, AppContextType } from '../app-context';
 
 export const EditarAgendaPage = () => {
     const [Agenda, setAgenda] = React.useState<Agenda | null>(null);
@@ -9,9 +9,10 @@ export const EditarAgendaPage = () => {
     const [error, setError] = React.useState<string | null>(null);
     const { id } = useParams();
     const navigate = useNavigate();
+    const context: AppContextType = React.useContext(AppContext);
     React.useEffect(() => {
         document.title = 'Editar Agenda';
-        fetch(baseUrl + `/api/agenda/${id}`, {
+        fetch(context.api + `/api/agenda/${id}`, {
             method: 'GET',
         })
             .then((response) => {
@@ -30,7 +31,7 @@ export const EditarAgendaPage = () => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        fetch(baseUrl + `/api/agenda/${id}`, {
+        fetch(context.api + `/api/agenda/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ export const EditarAgendaPage = () => {
     };
 
     const handleDeleteButton = () => {
-        fetch(baseUrl + `/api/agenda/${id}`, {
+        fetch(context.api + `/api/agenda/${id}`, {
             method: 'DELETE',
         })
             .then((response) => {
@@ -127,7 +128,7 @@ export const EditarAgendaPage = () => {
                                 className="font-sans text-gray-700 text-sm"
                                 htmlFor="n-contatos"
                             >
-                                {Agenda.contatos ? Agenda.contatos.length : 0}{' '}
+                                {Agenda.quantContatos}
                                 contatos cadastrados nesta agenda
                             </label>
                             <button

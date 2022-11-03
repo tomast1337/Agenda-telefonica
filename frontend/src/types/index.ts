@@ -2,17 +2,17 @@ export class Agenda {
     id: number;
     nome: string;
     descricao: string;
-    contatos: Contato[];
+    quantContatos: number;
     constructor(json: {
         id: number;
         nome: string;
         descricao: string;
-        contatos: Contato[];
+        quantContatos: number;
     }) {
         this.id = json.id;
         this.nome = json.nome;
         this.descricao = json.descricao;
-        this.contatos = json.contatos;
+        this.quantContatos = json.quantContatos;
     }
 }
 
@@ -22,20 +22,20 @@ export class Contato {
     email: string;
     telefone: string;
     imagem?: string | null;
-    agenda: Agenda;
+    agendaId: number;
     constructor(json: {
         id: number;
         nome: string;
         email: string;
         telefone: string;
         imagem?: string;
-        agenda: Agenda;
+        agendaId: number;
     }) {
         this.id = json.id;
         this.nome = json.nome;
         this.email = json.email;
         this.telefone = json.telefone;
         this.imagem = json.imagem || null;
-        this.agenda = json.agenda;
+        this.agendaId = json.agendaId;
     }
 }

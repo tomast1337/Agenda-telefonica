@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AppContext, AppContextType } from '../app-context';
 
 export const CriarAgendaPage = () => {
     React.useEffect(() => {
@@ -11,9 +12,11 @@ export const CriarAgendaPage = () => {
     const [erro, setErro] = React.useState<string | null>(null);
     const navigate = useNavigate();
 
+    const context: AppContextType = React.useContext(AppContext);
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        fetch('http://localhost:3000/api/agenda', {
+        fetch(context.api + '/api/agenda', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -1,13 +1,20 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import { baseUrl } from '../variables';
+import { Link, useNavigate } from 'react-router-dom';
 import { Agenda } from '../types';
+import { AppContext, AppContextType } from '../app-context';
 
 export const AgendaDetail = (props: { agenda: Agenda }) => {
     const { agenda } = props;
+    const context: AppContextType = React.useContext(AppContext);
+    const navigate = useNavigate();
     return (
-        <Link to={`/agenda/${agenda.id}`}>
-            <div className="flex flex-col font-sans rounded-md shadow-2xl bg-gray-100">
+        <div className="flex flex-col font-sans rounded-md shadow-2xl bg-gray-100">
+            <div
+                onClick={() => {
+                    context.AgendaSelecionada = agenda;
+                    navigate(`/agenda/${agenda.id}`);
+                }}
+            >
                 <h1 className="py-4 text-center text-lg text-gray-800">
                     {agenda.nome}
                 </h1>
@@ -15,16 +22,19 @@ export const AgendaDetail = (props: { agenda: Agenda }) => {
                     {agenda.descricao}
                 </p>
                 <p className="px-4 text-lg font-semibold text-slate-500">
-                    {agenda.contatos?.length} contatos
+                    {agenda.quantContatos} contatos
                 </p>
-                <Link
-                    className="bg-gray-900 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md text-lg font-medium px-4 py-2 mt-4 w-fit-content"
-                    to={`/agenda/${agenda.id}/editar`}
-                >
-                    Editar
-                </Link>
             </div>
-        </Link>
+            <button
+                className="bg-gray-900 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md text-lg font-medium px-4 py-2 mt-4 w-fit-content"
+                onClick={() => {
+                    context.AgendaSelecionada = agenda;
+                    navigate(`/agenda/${agenda.id}/editar`);
+                }}
+            >
+                Editar
+            </button>
+        </div>
     );
 };
 
@@ -32,10 +42,11 @@ export const IndexPage = () => {
     const [agendas, setAgendas] = React.useState<Agenda[]>([]);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
+    const context: AppContextType = React.useContext(AppContext);
     React.useEffect(() => {
         document.title = 'Agenda Telefônica';
         if (loading) {
-            fetch(baseUrl + '/api/agenda/')
+            fetch(context.api + '/api/agenda/')
                 .then((response) => {
                     if (response.ok) {
                         response.json().then((data) => {
