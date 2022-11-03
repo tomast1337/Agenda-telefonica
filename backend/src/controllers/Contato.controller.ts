@@ -84,8 +84,41 @@ export class ContatoController {
         return response.status(201).json(contatoCreated);
     }
 
+    @Put(':id')
+    async update(
+        @Req() request: Request<Contato>,
+        @Res() response: Response<Contato | { message: string }>,
+    ): Promise<Response> {
+        const contato = new Contato();
+        contato.id = request.params.id;
+        contato.nome = request.body.nome;
+        contato.telefone = request.body.telefone;
+        contato.agenda = new Agenda();
+        contato.agenda.id = request.body.agendaId;
+        try {
+            const contatoUpdated = await this.contatoService.update(contato);
+            return response.status(200).json(contatoUpdated);
+        } catch (error) {
+            return response.status(404).json({ message: error.message });
+        }
+    }
+
+    @Delete(':id')
+    async delete(
+        @Req() request: Request<{ id: number }>,
+        @Res() response: Response<{ message: string }>,
+    ): Promise<Response> {
+        try {
+            await this.contatoService.delete(request.params.id);
+        } catch (error) {
+            return response.status(404).json({ message: 'Contato not found' });
+        }
+        return response.status(200).json({
+            message: 'Contato deleted successfully',
+        });
+    }
+
     @Put(':idContato/imagem')
-    // Change file name
     @UseInterceptors(
         FileInterceptor('imagem', {
             dest: 'uploads',
@@ -140,41 +173,7 @@ export class ContatoController {
         }
     }
 
-    @Put(':id')
-    async update(
-        @Req() request: Request<Contato>,
-        @Res() response: Response<Contato | { message: string }>,
-    ): Promise<Response> {
-        const contato = new Contato();
-        contato.id = request.params.id;
-        contato.nome = request.body.nome;
-        contato.telefone = request.body.telefone;
-        contato.agenda = new Agenda();
-        contato.agenda.id = request.body.agendaId;
-        try {
-            const contatoUpdated = await this.contatoService.update(contato);
-            return response.status(200).json(contatoUpdated);
-        } catch (error) {
-            return response.status(404).json({ message: error.message });
-        }
-    }
-
-    @Delete(':id')
-    async delete(
-        @Req() request: Request<{ id: number }>,
-        @Res() response: Response<{ message: string }>,
-    ): Promise<Response> {
-        try {
-            await this.contatoService.delete(request.params.id);
-        } catch (error) {
-            return response.status(404).json({ message: 'Contato not found' });
-        }
-        return response.status(200).json({
-            message: 'Contato deleted successfully',
-        });
-    }
-
-    @Get('nome/:nome')
+    @Get('/nome/:nome')
     async findByName(
         @Req() request: Request<{ nome: string }>,
         @Res() response: Response<Contato[] | { message: string }>,
@@ -189,7 +188,7 @@ export class ContatoController {
         }
     }
 
-    @Get('telefone/:telefone')
+    @Get('/telefone/:telefone')
     async findByPhone(
         @Req() request: Request<{ telefone: string }>,
         @Res() response: Response<Contato[] | { message: string }>,
@@ -204,7 +203,7 @@ export class ContatoController {
         }
     }
 
-    @Get('email/:email')
+    @Get('/email/:email')
     async findByEmail(
         @Req() request: Request<{ email: string }>,
         @Res() response: Response<Contato[] | { message: string }>,

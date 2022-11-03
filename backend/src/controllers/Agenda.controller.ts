@@ -74,15 +74,4 @@ export class AgendaController {
         }
         return response.status(200).json(agenda);
     }
-
-    @Get('nome/:nome')
-    public async findByName(
-        @Req() request: Request<{ nome: string }>,
-        @Res() response: Response<Agenda[]>,
-    ): Promise<Response<Agenda[]>> {
-        const agendas = await this.agendaService.findBySimilarName(
-            request.params.nome,
-        );
-        return response.status(200).json(agendas);
-    }
 }
