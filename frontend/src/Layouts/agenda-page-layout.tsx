@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { AppContext, AppContextType } from '../app-context';
 
 export const AgendaPageBody = (props: { children: React.ReactNode }) => {
     const { children } = props;
     const { id } = useParams();
+    const context: AppContextType = React.useContext(AppContext);
     return (
         <>
             <div id="navbar" className="bg-gray-800 w-full z-10 font-sans">
@@ -19,19 +21,19 @@ export const AgendaPageBody = (props: { children: React.ReactNode }) => {
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-lg font-medium"
                             to={`/agenda/${id}`}
                         >
-                            Lista de contatos dessa agenda
+                            {`Agenda ${context.AgendaSelecionada?.nome}`}
                         </Link>
                         <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-lg font-medium"
                             to={`/agenda/${id}/criar-contato`}
                         >
-                            Adicionar Contato
+                            {`Adicionar Contato à Agenda ${context.AgendaSelecionada?.nome}`}
                         </Link>
                         <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-lg font-medium"
                             to={`/agenda/${id}/editar`}
                         >
-                            Editar essa agenda
+                            {`Editar Agenda ${context.AgendaSelecionada?.nome}`}
                         </Link>
                     </div>
                 </div>
