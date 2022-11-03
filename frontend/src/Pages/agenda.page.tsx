@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AppContext, AppContextType } from '../app-context';
 import { Contato } from '~types';
 
@@ -13,7 +13,7 @@ const ContatoCard = (props: { contato: Contato }) => {
                 <div className="flex-none w-48 relative">
                     <img
                         src={
-                            contato.foto ||
+                            contato.imagem ||
                             'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
                         }
                         alt=""
@@ -28,14 +28,12 @@ const ContatoCard = (props: { contato: Contato }) => {
                         <p>{contato.email}</p>
                         <p>{contato.telefone}</p>
                     </div>
-                    <button
+                    <Link
                         className="bg-gray-300 rounded-md text-gray-600 hover:text-gray-700 hover:bg-gray-400 m-1 p-1"
-                        onClick={() => {
-                            console.log('edit');
-                        }}
+                        to={`/agenda/${context.AgendaSelecionada?.id}/${contato.id}`}
                     >
                         Editar Contato
-                    </button>
+                    </Link>
                 </div>
             </li>
         </>
@@ -54,7 +52,7 @@ export const AgendaPage = () => {
         if (!context.AgendaSelecionada) {
             navigate('/');
         }
-        fetch(context.api + `/api/contato/${id}`)
+        fetch(context.api + `/api/contatos/${id}`)
             .then((response) => {
                 setLoading(false);
                 if (response.ok) {
