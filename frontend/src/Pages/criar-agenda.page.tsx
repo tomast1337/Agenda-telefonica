@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { createAgenda } from '../fetch-utils';
 import { AppContext, AppContextType } from '../app-context';
+import { Agenda } from '~types';
 
 export const CriarAgendaPage = () => {
     React.useEffect(() => {
@@ -14,28 +16,14 @@ export const CriarAgendaPage = () => {
 
     const context: AppContextType = React.useContext(AppContext);
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        fetch(context.api + '/api/agenda', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                nome,
-                descricao,
-            }),
-        })
-            .then((response) => {
-                if (response.ok) {
-                    response.json().then((data) => {
-                        navigate(`/agenda/${data.id}`);
-                    });
-                }
-            })
-            .catch((error) => {
-                setErro(error.message);
-            });
+        try {
+            await createAgenda({ nome, descricao } as Agenda, context.api);
+            navigate('/');
+        } catch (error: any) {
+            setErro(error.message);
+        }
     };
 
     return (

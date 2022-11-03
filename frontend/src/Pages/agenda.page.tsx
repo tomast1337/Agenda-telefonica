@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AppContext, AppContextType } from '../app-context';
 import { Contato } from '~types';
+import { getContatos } from '../fetch-utils';
 
 const ContatoCard = (props: { contato: Contato }) => {
     const { contato } = props;
     const context: AppContextType = React.useContext(AppContext);
-    const navigate = useNavigate();
     return (
         <>
             <li className="flex font-sans rounded-md shadow-2xl bg-gray-100 w-1/2 my-2 mx-auto">
@@ -50,20 +50,18 @@ export const AgendaPage = () => {
         if (!context.AgendaSelecionada) {
             navigate('/');
         }
-        fetch(context.api + `/api/contatos/${id}`)
-            .then((response) => {
-                setLoading(false);
-                if (response.ok) {
-                    response.json().then((data) => {
-                        setContatos(data);
-                    });
-                } else {
-                    setError('Nem um Contato encontrado');
+        console.log('id', id);
+        (async () => {
+            try {
+                if (id) {
+                    const contatos = await getContatos(+id, context.api);
+                    setContatos(contatos);
                 }
-            })
-            .catch((error) => {
+            } catch (error: any) {
                 setError(error.message);
-            });
+            }
+            setLoading(false);
+        })();
     }, [id]);
 
     return (

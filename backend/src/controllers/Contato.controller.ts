@@ -8,6 +8,7 @@ import {
     Delete,
     UseInterceptors,
     UploadedFile,
+    Logger,
 } from '@nestjs/common';
 import { Contato, ContatoInfo } from '../entities/Contato.entity';
 import { Agenda } from '../entities/Agenda.entity';
@@ -93,6 +94,7 @@ export class ContatoController {
         contato.id = request.params.id;
         contato.nome = request.body.nome;
         contato.telefone = request.body.telefone;
+        contato.email = request.body.email;
         contato.agenda = new Agenda();
         contato.agenda.id = request.body.agendaId;
         try {
@@ -124,7 +126,7 @@ export class ContatoController {
             dest: 'uploads',
             // Change filename
             limits: {
-                fileSize: 1024 * 1024 * 20, // 50MB
+                fileSize: 1024 * 1024 * 20, // 20MB
                 files: 1, // 1 file
                 fieldNameSize: 255, // 255 characters
             },
@@ -134,7 +136,6 @@ export class ContatoController {
                     const { idContato } = req.params;
                     const extension = file.mimetype.split('/')[1];
                     file.fieldname = `${idContato}-${Date.now()}.${extension}`;
-                    //file.filename = filename;
                     cb(null, true);
                 } else {
                     cb(new Error('Invalid file type'), false);
@@ -148,11 +149,12 @@ export class ContatoController {
         @Res() response: Response<Contato | { message: string; url?: string }>,
     ): Promise<Response> {
         const { idContato } = request.params;
-        const { imagem } = await this.contatoService.findById(idContato); // Get current image
+        const contato = await this.contatoService.findById(idContato); // Get current image
+        Logger.log(contato);
         try {
             const url = await this.fileUploadService.uploadFile(file);
-            if (imagem) {
-                await this.fileUploadService.deleteFile(imagem); // Delete current image
+            if (contato.imagem) {
+                await this.fileUploadService.deleteFile(contato.imagem); // Delete current image
             }
             try {
                 const contato = await this.contatoService.updateImage(

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Agenda } from '../types';
 import { AppContext, AppContextType } from '../app-context';
+import { getAgendas } from '../fetch-utils';
 
 export const AgendaDetail = (props: { agenda: Agenda }) => {
     const { agenda } = props;
@@ -37,18 +38,15 @@ export const IndexPage = () => {
     React.useEffect(() => {
         document.title = 'Agenda Telefônica';
         if (loading) {
-            fetch(context.api + '/api/agenda/')
-                .then((response) => {
-                    if (response.ok) {
-                        response.json().then((data) => {
-                            setAgendas(data);
-                            setLoading(false);
-                        });
-                    }
-                })
-                .catch((error) => {
+            (async () => {
+                try {
+                    const agendas = await getAgendas(context.api);
+                    setAgendas(agendas);
+                    setLoading(false);
+                } catch (error: any) {
                     setError(error.message);
-                });
+                }
+            })();
         }
     }, []);
 

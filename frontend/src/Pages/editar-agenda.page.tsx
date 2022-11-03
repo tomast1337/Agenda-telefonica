@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Agenda } from '../types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppContext, AppContextType } from '../app-context';
+import { deleteAgenda, updateAgenda } from '../fetch-utils';
 
 export const EditarAgendaPage = () => {
-    const [Agenda, setAgenda] = React.useState<Agenda | null>(null);
+    const [Agenda, setAgenda] = React.useState<Agenda>();
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
     const { id } = useParams();
@@ -12,60 +13,36 @@ export const EditarAgendaPage = () => {
     const context: AppContextType = React.useContext(AppContext);
     React.useEffect(() => {
         document.title = 'Editar Agenda';
-        fetch(context.api + `/api/agenda/${id}`, {
-            method: 'GET',
-        })
-            .then((response) => {
-                if (response.ok) {
-                    response.json().then((data) => {
-                        setAgenda(data);
-                        setLoading(false);
-                    });
-                }
-            })
-            .catch((error) => {
-                setError(error.message);
-            });
+        if (!context.AgendaSelecionada) {
+            navigate('/');
+        } else {
+            setAgenda(context.AgendaSelecionada);
+            setLoading(false);
+        }
     }, []);
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        fetch(context.api + `/api/agenda/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(Agenda),
-        })
-            .then((response) => {
-                if (response.ok) {
-                    response.json().then((data) => {
-                        setAgenda(data);
-                        setLoading(false);
-                        navigate(`/agenda/${id}`);
-                    });
-                }
-            })
-            .catch((error) => {
-                setError(error.message);
-            });
+        try {
+            if (Agenda) {
+                const agenda = await updateAgenda(Agenda, context.api);
+                context.AgendaSelecionada = agenda;
+                navigate(`/agenda/${context.AgendaSelecionada?.id}`);
+            }
+        } catch (error: any) {
+            setError(error.message);
+        }
     };
 
-    const handleDeleteButton = () => {
-        fetch(context.api + `/api/agenda/${id}`, {
-            method: 'DELETE',
-        })
-            .then((response) => {
-                if (response.ok) {
-                    response.json().then(() => {
-                        navigate('/');
-                    });
-                }
-            })
-            .catch((error) => {
-                setError(error.message);
-                console.log(error);
-            });
+    const handleDeleteButton = async () => {
+        try {
+            if (Agenda) {
+                await deleteAgenda(Agenda.id, context.api);
+                navigate('/');
+            }
+        } catch (error: any) {
+            setError(error?.message);
+        }
     };
 
     return (
@@ -123,12 +100,9 @@ export const EditarAgendaPage = () => {
                                     })
                                 }
                             />
-                            <label
-                                className="font-sans text-gray-700 text-sm"
-                                htmlFor="n-contatos"
-                            >
+                            <small className="font-sans text-gray-700 text-sm">
                                 {`${Agenda.quantContatos} contatos cadastrados nesta agenda`}
-                            </label>
+                            </small>
                             <button
                                 className="bg-gray-900 text-gray-300 hover:bg-gray-700 hover:text-white rounded-md text-lg font-medium px-4 py-2 mt-4 w-fit-content"
                                 type="submit"

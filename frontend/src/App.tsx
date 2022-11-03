@@ -6,19 +6,14 @@ import { CriarAgendaPage } from './Pages/criar-agenda.page';
 import { EditarAgendaPage } from './Pages/editar-agenda.page';
 import { AgendaPageBody } from './Layouts/agenda-page-layout';
 import { AgendaPage } from './Pages/agenda.page';
-import { AppContext } from './app-context';
+import { AppContext, defaultState } from './app-context';
 import { CriarContatoPage } from './Pages/criar-contato.page';
 import { EditarContatoPage } from './Pages/editar-contato.page';
 
 export default () => {
     return (
         <>
-            <AppContext.Provider
-                value={{
-                    api: 'http://localhost:3000',
-                    AgendaSelecionada: null,
-                }}
-            >
+            <AppContext.Provider value={defaultState}>
                 <HashRouter>
                     <Routes>
                         {/* Criação de agenda */}

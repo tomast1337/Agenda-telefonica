@@ -1,5 +1,11 @@
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+    deleteContato,
+    getContato,
+    updateContato,
+    updateContatoImage,
+} from '../fetch-utils';
 import { AppContext, AppContextType } from '../app-context';
 import { Contato } from '../types';
 
@@ -18,39 +24,31 @@ export const EditarContatoPage = () => {
         document.title = `Detalhes Contato`;
         if (!context.AgendaSelecionada) {
             navigate('/');
-        }
-        fetch(
-            context.api +
-                `/api/contatos/${context.AgendaSelecionada?.id}/${contatoId}`,
-        ).then((response) => {
-            if (response.ok) {
-                response.json().then((contato) => {
+        } else {
+            if (contatoId && context.AgendaSelecionada) {
+                (async () => {
+                    const contato = await getContato(
+                        context.AgendaSelecionada.id,
+                        +contatoId,
+                        context.api,
+                    );
                     setId(contato.id);
                     setNome(contato.nome);
                     setEmail(contato.email);
                     setTelefone(contato.telefone);
                     setImagePreview(contato.imagem);
-                });
+                })();
             }
-        });
+        }
     }, []);
     const uploadImage = async (contatoId: number, file: File) => {
-        const formData = new FormData();
-        formData.append('imagem', file);
-        fetch(context.api + `/api/contatos/${contatoId}/imagem`, {
-            method: 'PUT',
-            body: formData,
-        })
-            .then((response) => {
-                if (response.ok) {
-                    navigate(`/agenda/${context.AgendaSelecionada?.id}`);
-                }
-            })
-            .catch((error) => {
-                setError(error);
-            });
+        try {
+            await updateContatoImage(contatoId, file, context.api);
+        } catch (error: any) {
+            setError(error.message);
+        }
     };
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const contato = {
             id,
@@ -59,38 +57,24 @@ export const EditarContatoPage = () => {
             telefone,
             agendaId: context.AgendaSelecionada?.id,
         } as Contato;
-        fetch(context.api + `/api/contatos/${contatoId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(contato),
-        })
-            .then((response) => {
-                if (response.ok) {
-                    if (imagem) {
-                        uploadImage(id, imagem);
-                    } else {
-                        navigate(`/agenda/${context.AgendaSelecionada?.id}`);
-                    }
-                }
-            })
-            .catch((error) => {
-                setError(error);
-            });
+        try {
+            await updateContato(contato, context.api);
+            if (imagem) {
+                await uploadImage(contato.id, imagem);
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
+            navigate(`/agenda/${context.AgendaSelecionada?.id}`);
+        } catch (error: any) {
+            setError(error.message);
+        }
     };
     const handleDelete = () => {
-        fetch(context.api + `/api/contatos/${id}`, {
-            method: 'DELETE',
-        })
-            .then((response) => {
-                if (response.ok) {
-                    navigate(`/agenda/${context.AgendaSelecionada?.id}`);
-                }
-            })
-            .catch((error) => {
-                setError(error);
-            });
+        try {
+            deleteContato(id, context.api);
+            navigate(`/agenda/${context.AgendaSelecionada?.id}`);
+        } catch (error: any) {
+            setError(error.message);
+        }
     };
     return (
         <>

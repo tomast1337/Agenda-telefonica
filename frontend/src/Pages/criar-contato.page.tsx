@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createContato, updateContatoImage } from '../fetch-utils';
 import { AppContext, AppContextType } from '../app-context';
 import { Contato } from '../types';
 
 export const CriarContatoPage = () => {
     const [error, setError] = React.useState<string | null>();
+    const [idCriado, setIdCriado] = React.useState(-1);
     const [nome, setNome] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [telefone, setTelefone] = React.useState('');
@@ -19,23 +21,14 @@ export const CriarContatoPage = () => {
         }
     }, []);
     const uploadImage = async (contatoId: number, file: File) => {
-        const formData = new FormData();
-        formData.append('imagem', file);
-        fetch(context.api + `/api/contatos/${contatoId}/imagem`, {
-            method: 'PUT',
-            body: formData,
-        })
-            .then((response) => {
-                if (response.ok) {
-                    navigate(`/agenda/${context.AgendaSelecionada?.id}`);
-                }
-            })
-            .catch((error) => {
-                setError(error);
-            });
+        try {
+            await updateContatoImage(contatoId, file, context.api);
+        } catch (error: any) {
+            setError(error.message);
+        }
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const contato = {
             nome,
@@ -43,27 +36,17 @@ export const CriarContatoPage = () => {
             telefone,
             agendaId: context.AgendaSelecionada?.id,
         } as Contato;
-        fetch(context.api + `/api/contatos/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(contato),
-        })
-            .then((response) => {
-                if (response.ok) {
-                    if (imagem) {
-                        response.json().then((contato) => {
-                            uploadImage(contato.id, imagem);
-                        });
-                    } else {
-                        navigate(`/agenda/${context.AgendaSelecionada?.id}`);
-                    }
-                }
-            })
-            .catch((error) => {
-                setError(error);
-            });
+
+        try {
+            contato.id = await (await createContato(contato, context.api)).id;
+            if (imagem) {
+                await uploadImage(contato.id, imagem);
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+            }
+            navigate(`/agenda/${context.AgendaSelecionada?.id}`);
+        } catch (error: any) {
+            setError(error.message);
+        }
     };
     return (
         <>

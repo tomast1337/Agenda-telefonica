@@ -5,7 +5,7 @@ import { AgendaService } from '../services/Agenda.service';
 
 @Controller('agenda')
 export class AgendaController {
-    constructor(private readonly agendaService: AgendaService) { }
+    constructor(private readonly agendaService: AgendaService) {}
     @Get()
     public async index(): Promise<AgendaInfo[]> {
         const agendas = await this.agendaService.findAll();
