@@ -44,7 +44,7 @@ export const EditarAgendaPage = () => {
                         setAgenda(data);
                         console.log(data);
                         setLoading(false);
-                        setError('Agenda atualizada com sucesso!');
+                        navigate(`/agenda/${id}`);
                     });
                 }
             })
