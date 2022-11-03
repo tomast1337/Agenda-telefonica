@@ -32,3 +32,12 @@ export class Contato {
     @ManyToOne(() => Agenda, (agenda) => agenda.contatos)
     agenda: Agenda;
 }
+
+export interface ContatoInfo {
+    id: number;
+    nome: string;
+    email: string;
+    telefone: string;
+    imagem: string | null;
+    agendaId: number;
+}

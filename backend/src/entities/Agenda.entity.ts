@@ -21,3 +21,10 @@ export class Agenda {
     @OneToMany(() => Contato, (contato) => contato.agenda)
     contatos?: Contato[];
 }
+
+export interface AgendaInfo {
+    id: number;
+    nome: string;
+    descricao: string;
+    quantContatos: number;
+}
