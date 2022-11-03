@@ -1,5 +1,6 @@
 import { S3 } from 'aws-sdk';
 import { Logger, Injectable } from '@nestjs/common';
+import * as fs from 'fs';
 
 @Injectable()
 export class FileUploadService {
@@ -16,14 +17,18 @@ export class FileUploadService {
     }
     /* Enviar arquivo para o S3 e retornar a URL */
     async uploadFile(file: Express.Multer.File): Promise<string> {
+        const fileContents = fs.readFileSync(file.path);
         const result = await this.s3
             .upload({
                 Bucket: this.bucketName,
-                Key: file.originalname,
-                Body: file.buffer,
+                Key: file.fieldname,
+                Body: fileContents,
                 ACL: 'public-read',
             })
             .promise();
+        Logger.log(result);
+        fs.unlinkSync(file.path); // Remove file from temp folder
+        Logger.log(`File ${file.originalname} uploaded to S3 and deleted form local storage`);
         return result.Location;
     }
 

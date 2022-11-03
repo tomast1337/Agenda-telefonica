@@ -15,7 +15,6 @@ import { Request, Response } from 'express';
 import { ContatoService } from 'src/services/Contato.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from '../services/FileUpload.service';
-
 @Controller('contato')
 export class ContatoController {
     constructor(
@@ -78,8 +77,8 @@ export class ContatoController {
                 if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
                     const { idContato } = req.params;
                     const extension = file.mimetype.split('/')[1];
-                    const filename = `${idContato}.${extension}`;
-                    file.filename = filename;
+                    file.fieldname = `${idContato}-${Date.now()}.${extension}`;
+                    //file.filename = filename;
                     cb(null, true);
                 } else {
                     cb(new Error('Invalid file type'), false);
@@ -108,6 +107,7 @@ export class ContatoController {
                     .json({ message: 'Error updating image' });
             }
         } catch (error) {
+            console.log(error);
             return response
                 .status(500)
                 .json({ message: 'Error uploading image' });
