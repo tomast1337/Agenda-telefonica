@@ -15,7 +15,7 @@ import { Request, Response } from 'express';
 import { ContatoService } from 'src/services/Contato.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadService } from '../services/FileUpload.service';
-@Controller('contato')
+@Controller('contatos')
 export class ContatoController {
     constructor(
         private readonly contatoService: ContatoService,
@@ -43,6 +43,29 @@ export class ContatoController {
                 } as ContatoInfo;
             }),
         );
+    }
+
+    @Get('/:agendaId/:contatoId')
+    async findById(
+        @Req() request: Request<{ contatoId: number }>,
+        @Res() response: Response<ContatoInfo | { message: string }>,
+    ): Promise<Response> {
+        try {
+            const { contatoId } = request.params;
+            const contato = await this.contatoService.findById(contatoId);
+            return response.json({
+                id: contato.id,
+                nome: contato.nome,
+                email: contato.email,
+                telefone: contato.telefone,
+                imagem: contato.imagem || null,
+                //agendaId: contato.agenda.id,
+            } as ContatoInfo);
+        } catch (error) {
+            return response
+                .status(404)
+                .json({ message: 'Contato não encontrado' });
+        }
     }
 
     @Post()

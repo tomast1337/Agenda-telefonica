@@ -10,7 +10,10 @@ export class AgendaService {
     ) {}
 
     async findAll(): Promise<Agenda[]> {
-        return await this.agendaRepository.find();
+        return await this.agendaRepository
+            .createQueryBuilder('agenda')
+            .leftJoinAndSelect('agenda.contatos', 'contatos')
+            .getMany();
     }
 
     async create(agenda: Agenda): Promise<Agenda> {
