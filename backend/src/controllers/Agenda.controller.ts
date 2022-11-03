@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Req, Res } from '@nestjs/common';
-import { Agenda } from '../entities/Agenda.entity';
+import { Agenda, AgendaInfo } from '../entities/Agenda.entity';
 import { Request, Response } from 'express';
 import { AgendaService } from '../services/Agenda.service';
 
@@ -7,9 +7,16 @@ import { AgendaService } from '../services/Agenda.service';
 export class AgendaController {
     constructor(private readonly agendaService: AgendaService) {}
     @Get()
-    public async index(): Promise<Agenda[]> {
+    public async index(): Promise<AgendaInfo[]> {
         const agendas = await this.agendaService.findAll();
-        return agendas;
+        return agendas.map((element: Agenda) => {
+            return {
+                id: element.id,
+                nome: element.nome,
+                descricao: element.descricao,
+                quantContatos: element.contatos ? element.contatos.length : 0,
+            } as AgendaInfo;
+        });
     }
 
     @Post()
