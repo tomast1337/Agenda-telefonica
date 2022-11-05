@@ -11,6 +11,11 @@ import { ContatoService } from './services/Contato.service';
 import { ConfigModule } from '@nestjs/config';
 import { FileUploadModule } from './modules/FileUpload.module';
 import { FileUploadService } from './services/FileUpload.service';
+import { JwtModule } from '@nestjs/jwt';
+import { UserModule } from './modules/User.module';
+import { UserProvider } from './providers/User.provider';
+import { AuthModule } from './modules/JWT.module';
+import { UserController } from './controllers/User.controller';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -20,15 +25,20 @@ import { FileUploadService } from './services/FileUpload.service';
         DatabaseModule,
         ContatoModule,
         AgendaModule,
+        UserModule,
         FileUploadModule,
+        AuthModule,
+        JwtModule.register({ secret: process.env.JWT_SECRET }),
     ],
-    controllers: [ContatoController, AgendaController],
+    controllers: [ContatoController, AgendaController, UserController],
     providers: [
         ...ContatoProvider,
         ...AgendaProvider,
+        ...UserProvider,
         ContatoService,
         AgendaService,
         FileUploadService,
+        AuthModule,
     ],
 })
 export class AppModule {}
