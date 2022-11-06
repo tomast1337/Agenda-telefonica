@@ -31,7 +31,7 @@ export const CriarAgendaPage = () => {
         event.preventDefault();
         try {
             await createAgenda({ nome, descricao } as Agenda, context);
-            navigate('/');
+            navigate('/agendas');
         } catch (error: any) {
             setErro(error.message);
         }
@@ -66,7 +66,9 @@ export const CriarAgendaPage = () => {
                     />
                 </FromGroup>
                 <SubmitButton type="submit">Criar Nova Agenda</SubmitButton>
-                <LinkButton to="/">Voltar Para a Página Inicial</LinkButton>
+                <LinkButton to="/agendas">
+                    Voltar Para a Página Inicial
+                </LinkButton>
             </Form>
         </Container>
     );
