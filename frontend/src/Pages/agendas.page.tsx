@@ -1,11 +1,18 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AppContext, AppContextType } from '../app-context';
 import {
-    PageHeader,
+    CardContainer,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardTitle,
+    Container,
     ErroMessage,
     InfoMessage,
+    PageHeader,
+    SmallText,
 } from '../components/common-components';
-import { AppContext, AppContextType } from '../app-context';
 import { getAgendas } from '../fetch-utils';
 import { Agenda } from '../types';
 
@@ -14,24 +21,18 @@ export const AgendaDetail = (props: { agenda: Agenda }) => {
     const context: AppContextType = React.useContext(AppContext);
     const navigate = useNavigate();
     return (
-        <div className="flex flex-col font-sans rounded-md shadow-2xl bg-gray-100 w-1/2 mx-auto">
-            <div
-                onClick={() => {
-                    context.AgendaSelecionada = agenda;
-                    navigate(`/agenda/${agenda.id}`);
-                }}
-            >
-                <h1 className="py-4 text-center text-lg text-gray-800">
-                    {agenda.nome}
-                </h1>
-                <p className="px-4 text-sm text-slate-700">
-                    {agenda.descricao}
-                </p>
-                <p className="px-4 text-lg font-semibold text-slate-500">
-                    {agenda.quantContatos} contatos
-                </p>
-            </div>
-        </div>
+        <CardContainer
+            onClick={() => {
+                context.AgendaSelecionada = agenda;
+                navigate(`/agenda/${agenda.id}`);
+            }}
+        >
+            <CardContent>
+                <CardTitle>{agenda.nome}</CardTitle>
+                <CardDescription>{agenda.descricao}</CardDescription>
+                <SmallText>{`${agenda.quantContatos} contatos`}</SmallText>
+            </CardContent>
+        </CardContainer>
     );
 };
 
@@ -61,18 +62,16 @@ export const AgendasPage = () => {
     return (
         <>
             <PageHeader>Lista Agendas</PageHeader>
-            <div className="flex flex-col align-center">
-                <div className="flex flex-col space-y-8 my-8 mx-16">
-                    {loading && <InfoMessage>Carregando...</InfoMessage>}
-                    {error && (
-                        <ErroMessage> Erro ao carregar agendas </ErroMessage>
-                    )}
+            <Container>
+                {loading && <InfoMessage>Carregando...</InfoMessage>}
+                {error && <ErroMessage> Erro ao carregar agendas </ErroMessage>}
+                <ul>
                     {agendas.length > 0 &&
                         agendas.map((agenda) => (
                             <AgendaDetail key={agenda.id} agenda={agenda} />
                         ))}
-                </div>
-            </div>
+                </ul>
+            </Container>
         </>
     );
 };

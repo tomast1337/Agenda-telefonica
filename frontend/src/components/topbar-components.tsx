@@ -21,7 +21,7 @@ export const TopBarLink = (props: {
     return (
         <Link
             to={props.to}
-            className="text-white hover:bg-gray-800 hover:text-white px-3 py-2 rounded-md text-5xl font-medium border-2 border-white"
+            className="text-white hover:bg-gray-800 hover:text-white px-3 py-2 rounded-md text-2xl font-medium border-2 border-white"
         >
             {props.children}
         </Link>
@@ -30,5 +30,5 @@ export const TopBarLink = (props: {
 
 export const TopBarButton = styled.button.attrs({
     className:
-        'text-white hover:bg-gray-800 hover:text-white px-3 py-2 rounded-md text-5xl font-medium border-2 border-white',
+        'text-white hover:bg-gray-800 hover:text-white px-3 py-2 rounded-md text-2xl font-medium border-2 border-white',
 })``;

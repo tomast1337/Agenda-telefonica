@@ -1,6 +1,17 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppContext, AppContextType } from '../app-context';
+import { Container, ErroMessage } from '../components/common-components';
+import {
+    Form,
+    FormTitle,
+    FromGroup,
+    ImagemPreview,
+    InputFile,
+    InputText,
+    Label,
+    SubmitButton,
+} from '../components/form-components';
 import { createContato, updateContatoImage } from '../fetch-utils';
 import { Contato } from '../types';
 
@@ -49,87 +60,67 @@ export const CriarContatoPage = () => {
         }
     };
     return (
-        <>
-            <h1 className="text-center text-xl">Criar Contato</h1>
-            {error && (
-                <p className="text-center text-lg text-red-700">{error}</p>
-            )}
-            <form
-                className="flex flex-col justify-center items-center"
-                onSubmit={handleSubmit}
-            >
-                <img
-                    src={
-                        imagePreview
-                            ? imagePreview
-                            : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
-                    }
-                    className="w-32 h-32 rounded-full"
-                    alt="Imagem do contato"
-                />
-
-                <div className="flex flex-col w-1/2">
-                    <label
-                        className="font-sans text-gray-700 text-sm"
-                        htmlFor="nome"
-                    >
-                        Nome
-                    </label>
-                    <input
-                        className="border-2 border-gray-300 p-2 rounded-md"
+        <Container>
+            <Form onSubmit={handleSubmit}>
+                <FromGroup>
+                    <FormTitle>Criar Contato</FormTitle>
+                </FromGroup>
+                {error && <ErroMessage>{error}</ErroMessage>}
+                <FromGroup>
+                    <ImagemPreview
+                        src={
+                            imagePreview
+                                ? imagePreview
+                                : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
+                        }
+                        alt="Imagem do contato"
+                    />
+                </FromGroup>
+                <FromGroup>
+                    <Label htmlFor="nome">Nome</Label>
+                    <InputText
                         type="text"
                         name="nome"
                         id="nome"
                         value={nome}
-                        onChange={(event) => {
-                            setNome(event.target.value);
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setNome(e.target.value);
                         }}
                     />
-                    <label
-                        className="font-sans text-gray-700 text-sm"
-                        htmlFor="email"
-                    >
-                        Email
-                    </label>
-                    <input
-                        className="border-2 border-gray-300 p-2 rounded-md"
+                </FromGroup>
+                <FromGroup>
+                    <Label htmlFor="email">Email</Label>
+                    <InputText
                         type="email"
                         name="email"
                         id="email"
                         value={email}
-                        onChange={(event) => {
-                            setEmail(event.target.value);
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setEmail(e.target.value);
                         }}
                     />
-                    <label
-                        className="font-sans text-gray-700 text-sm"
-                        htmlFor="telefone"
-                    >
-                        Telefone
-                    </label>
-                    <input
-                        className="border-2 border-gray-300 p-2 rounded-md"
+                </FromGroup>
+                <FromGroup>
+                    <Label htmlFor="telefone">Telefone</Label>
+                    <InputText
                         type="tel"
                         name="telefone"
                         id="telefone"
                         value={telefone}
-                        onChange={(event) => {
-                            setTelefone(event.target.value);
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            setTelefone(e.target.value);
                         }}
                     />
-                    <label
-                        className="font-sans text-gray-700 text-sm"
-                        htmlFor="imagem"
-                    >
-                        Imagem
-                    </label>
-                    <input
+                </FromGroup>
+                <FromGroup>
+                    <Label htmlFor="imagem">Imagem</Label>
+                    <InputFile
                         type="file"
                         accept="image/*"
                         name="imagem"
                         id="imagem"
-                        onChange={(event) => {
-                            const { files } = event.target;
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            const { files } = e.target;
                             if (files) {
                                 const file = files[0];
                                 setImagem(file);
@@ -141,14 +132,13 @@ export const CriarContatoPage = () => {
                             }
                         }}
                     />
-                </div>
-                <button
-                    className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4"
-                    type="submit"
-                >
-                    Criar novo Contato
-                </button>
-            </form>
-        </>
+                </FromGroup>
+                <FromGroup>
+                    <SubmitButton type="submit">
+                        Criar novo Contato
+                    </SubmitButton>
+                </FromGroup>
+            </Form>
+        </Container>
     );
 };

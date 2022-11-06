@@ -29,7 +29,5 @@ export function tokenRedirect(
 ): void {
     if (!verifyToken(context)) {
         navigate('/');
-    } else {
-        navigate('/agendas');
     }
 }

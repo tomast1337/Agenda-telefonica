@@ -31,7 +31,7 @@ export const LoginPage = () => {
         try {
             const token = await login(username, password, context);
             context.token = token;
-            tokenRedirect(context, navigate);
+            navigate('/agendas');
         } catch (error: any) {
             setError(error.message);
         }

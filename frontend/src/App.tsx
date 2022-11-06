@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { AppContext, defaultState } from './app-context';
-import { AgendaPageBody } from './Layouts/agenda-page-layout';
-import { PageBody } from './Layouts/page-layout';
+import { ContatosPageBody } from './Layouts/contatos-layout';
+import { PageBody } from './Layouts/agendas-layout';
 import { AgendaPage } from './Pages/agenda.page';
 import { AgendasPage } from './Pages/agendas.page';
 import { CriarAgendaPage } from './Pages/criar-agenda.page';
@@ -59,35 +59,35 @@ export default () => {
                         <Route
                             path="/agenda/:id"
                             element={
-                                <AgendaPageBody>
+                                <ContatosPageBody>
                                     <AgendaPage />
-                                </AgendaPageBody>
+                                </ContatosPageBody>
                             }
                         />
                         {/* Criação detalha des de contato */}
                         <Route
                             path="/agenda/:id/:contatoId"
                             element={
-                                <AgendaPageBody>
+                                <ContatosPageBody>
                                     <EditarContatoPage />
-                                </AgendaPageBody>
+                                </ContatosPageBody>
                             }
                         />
                         {/* Criação de contato em uma agenda*/}
                         <Route
                             path="/agenda/:id/criar-contato"
                             element={
-                                <AgendaPageBody>
+                                <ContatosPageBody>
                                     <CriarContatoPage />
-                                </AgendaPageBody>
+                                </ContatosPageBody>
                             }
                         />
                         <Route
                             path="/agenda/:id/editar"
                             element={
-                                <AgendaPageBody>
+                                <ContatosPageBody>
                                     <EditarAgendaPage />
-                                </AgendaPageBody>
+                                </ContatosPageBody>
                             }
                         />
                         {/* Rota para quando não encontrar nenhuma rota */}
