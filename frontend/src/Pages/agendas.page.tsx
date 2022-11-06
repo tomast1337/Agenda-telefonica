@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Agenda } from '../types';
+import { useNavigate } from 'react-router-dom';
 import { AppContext, AppContextType } from '../app-context';
 import { getAgendas } from '../fetch-utils';
+import { Agenda } from '../types';
 
 export const AgendaDetail = (props: { agenda: Agenda }) => {
     const { agenda } = props;
@@ -30,7 +30,7 @@ export const AgendaDetail = (props: { agenda: Agenda }) => {
     );
 };
 
-export const IndexPage = () => {
+export const AgendasPage = () => {
     const [agendas, setAgendas] = React.useState<Agenda[]>([]);
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState<string | null>(null);
@@ -40,7 +40,7 @@ export const IndexPage = () => {
         if (loading) {
             (async () => {
                 try {
-                    const agendas = await getAgendas(context.api);
+                    const agendas = await getAgendas(context);
                     setAgendas(agendas);
                     setLoading(false);
                 } catch (error: any) {

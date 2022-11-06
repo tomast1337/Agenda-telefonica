@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createContato, updateContatoImage } from '../fetch-utils';
 import { AppContext, AppContextType } from '../app-context';
+import { createContato, updateContatoImage } from '../fetch-utils';
 import { Contato } from '../types';
 
 export const CriarContatoPage = () => {
@@ -22,7 +22,7 @@ export const CriarContatoPage = () => {
     }, []);
     const uploadImage = async (contatoId: number, file: File) => {
         try {
-            await updateContatoImage(contatoId, file, context.api);
+            await updateContatoImage(contatoId, file, context);
         } catch (error: any) {
             setError(error.message);
         }
@@ -38,7 +38,7 @@ export const CriarContatoPage = () => {
         } as Contato;
 
         try {
-            contato.id = await (await createContato(contato, context.api)).id;
+            contato.id = await (await createContato(contato, context)).id;
             if (imagem) {
                 await uploadImage(contato.id, imagem);
                 await new Promise((resolve) => setTimeout(resolve, 1000));

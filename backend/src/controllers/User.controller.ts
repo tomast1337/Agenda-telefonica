@@ -13,8 +13,8 @@ export class UserController {
     @Post('register')
     async register(
         @Req() req: Request<User>,
-        @Res() res: Response<UserInfo | string>,
-    ): Promise<Response<UserInfo | string>> {
+        @Res() res: Response<UserInfo | { message: string }>,
+    ): Promise<Response<UserInfo | { message: string }>> {
         const user = await this.userService.findByLogin(req.body.login);
         if (!user) {
             const user: User = new User();
@@ -27,21 +27,23 @@ export class UserController {
                 agendaIds: [],
             };
             Logger.log(`Registrando usuário ${user.login}`);
-            return res.send(userInfo);
+            return res.json(userInfo);
         } else {
-            return res.send('Nome de usuário já utilizado');
+            return res.status(401).json({ message: 'Usuário já existe' });
         }
     }
 
-    @Get('login')
+    @Get('login/:login/:senha')
     async login(
-        @Req() req: Request<{ user: string; senha: string }>,
+        @Req() req: Request,
         @Res() res: Response<{ token?: string; message: string }>,
     ): Promise<Response<{ token?: string; message: string }>> {
-        const user = await this.userService.findByLogin(req.body.user);
+        const login = req.params.login;
+        const senha = req.params.senha;
+        const user = await this.userService.findByLogin(login);
         if (user) {
             const isPasswordMatching = await bcrypt.compareSync(
-                req.body.senha,
+                senha,
                 user.senha,
             );
             if (isPasswordMatching) {

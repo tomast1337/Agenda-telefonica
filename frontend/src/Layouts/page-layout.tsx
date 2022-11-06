@@ -1,8 +1,15 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AppContext, AppContextType } from '../app-context';
+import { tokenRedirect } from '../token-utils';
 
 export const PageBody = (props: { children: React.ReactNode }) => {
     const { children } = props;
+    const context: AppContextType = React.useContext(AppContext);
+    const navigate = useNavigate();
+    React.useEffect(() => {
+        tokenRedirect(context, navigate);
+    }, []);
     return (
         <>
             <div id="navbar" className="bg-gray-800 w-full z-10 font-sans">
@@ -10,13 +17,13 @@ export const PageBody = (props: { children: React.ReactNode }) => {
                     <div className="relative flex items-center justify-center h-16">
                         <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-xl font-medium"
-                            to="/"
+                            to="/agenda"
                         >
                             Lista de Agendas
                         </Link>
                         <Link
                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-xl font-medium"
-                            to="/criar-agenda"
+                            to="/agenda/criar-agenda"
                         >
                             Criar Agenda
                         </Link>

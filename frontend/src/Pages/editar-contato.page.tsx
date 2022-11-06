@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { AppContext, AppContextType } from '../app-context';
 import {
     deleteContato,
     getContato,
     updateContato,
     updateContatoImage,
 } from '../fetch-utils';
-import { AppContext, AppContextType } from '../app-context';
 import { Contato } from '../types';
 
 export const EditarContatoPage = () => {
@@ -30,7 +30,7 @@ export const EditarContatoPage = () => {
                     const contato = await getContato(
                         context.AgendaSelecionada.id,
                         +contatoId,
-                        context.api,
+                        context,
                     );
                     setId(contato.id);
                     setNome(contato.nome);
@@ -43,7 +43,7 @@ export const EditarContatoPage = () => {
     }, []);
     const uploadImage = async (contatoId: number, file: File) => {
         try {
-            await updateContatoImage(contatoId, file, context.api);
+            await updateContatoImage(contatoId, file, context);
         } catch (error: any) {
             setError(error.message);
         }
@@ -58,7 +58,7 @@ export const EditarContatoPage = () => {
             agendaId: context.AgendaSelecionada?.id,
         } as Contato;
         try {
-            await updateContato(contato, context.api);
+            await updateContato(contato, context);
             if (imagem) {
                 await uploadImage(contato.id, imagem);
                 await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -70,7 +70,7 @@ export const EditarContatoPage = () => {
     };
     const handleDelete = () => {
         try {
-            deleteContato(id, context.api);
+            deleteContato(id, context);
             navigate(`/agenda/${context.AgendaSelecionada?.id}`);
         } catch (error: any) {
             setError(error.message);

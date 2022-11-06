@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Agenda } from '../types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppContext, AppContextType } from '../app-context';
 import { deleteAgenda, updateAgenda } from '../fetch-utils';
+import { Agenda } from '../types';
 
 export const EditarAgendaPage = () => {
     const [Agenda, setAgenda] = React.useState<Agenda>();
@@ -25,7 +25,7 @@ export const EditarAgendaPage = () => {
         event.preventDefault();
         try {
             if (Agenda) {
-                const agenda = await updateAgenda(Agenda, context.api);
+                const agenda = await updateAgenda(Agenda, context);
                 context.AgendaSelecionada = agenda;
                 navigate(`/agenda/${context.AgendaSelecionada?.id}`);
             }
@@ -37,7 +37,7 @@ export const EditarAgendaPage = () => {
     const handleDeleteButton = async () => {
         try {
             if (Agenda) {
-                await deleteAgenda(Agenda.id, context.api);
+                await deleteAgenda(Agenda.id, context);
                 navigate('/');
             }
         } catch (error: any) {

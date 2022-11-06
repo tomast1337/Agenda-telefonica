@@ -1,16 +1,59 @@
+import { AppContextType } from './app-context';
 import { Agenda, Contato } from './types';
+
+export async function login(
+    login: string,
+    senha: string,
+    context: AppContextType,
+): Promise<string> {
+    try {
+        const response = await fetch(
+            `${context.api}/api/users/login/${login}/${senha}`,
+        );
+        const data = await response.json();
+        if (data.token) {
+            context.token = data.token;
+            return data.token;
+        }
+        throw new Error(data.message);
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function createAccount(
+    login: string,
+    senha: string,
+    context: AppContextType,
+): Promise<any> {
+    await fetch(`${context.api}/api/users/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ login, senha }),
+    });
+}
 
 export async function getAgenda(
     idAgenda: number,
-    api_url: string,
+    context: AppContextType,
 ): Promise<Agenda> {
-    const response = await fetch(api_url + `/api/agenda/${idAgenda}`);
+    const response = await fetch(context.api + `/api/agenda/${idAgenda}`, {
+        headers: {
+            Authorization: `${context.token}`,
+        },
+    });
     const agenda = (await response.json()) as Agenda;
     return agenda;
 }
 
-export async function getAgendas(api_url: string): Promise<Agenda[]> {
-    const response = await fetch(api_url + '/api/agenda');
+export async function getAgendas(context: AppContextType): Promise<Agenda[]> {
+    const response = await fetch(context.api + '/api/agenda', {
+        headers: {
+            Authorization: `${context.token}`,
+        },
+    });
     const agendas = (await response.json()) as Agenda[];
     return agendas;
 }
@@ -18,10 +61,15 @@ export async function getAgendas(api_url: string): Promise<Agenda[]> {
 export async function getContato(
     idAgenda: number,
     idContato: number,
-    api_url: string,
+    context: AppContextType,
 ): Promise<Contato> {
     const response = await fetch(
-        api_url + `/api/contatos/${idAgenda}/${idContato}`,
+        context.api + `/api/contatos/${idAgenda}/${idContato}`,
+        {
+            headers: {
+                Authorization: `${context.token}`,
+            },
+        },
     );
     const contato = await response.json();
     return contato;
@@ -29,11 +77,12 @@ export async function getContato(
 
 export async function createContato(
     contato: Contato,
-    api_url: string,
+    context: AppContextType,
 ): Promise<Contato> {
-    const response = await fetch(api_url + `/api/contatos`, {
+    const response = await fetch(context.api + `/api/contatos`, {
         method: 'POST',
         headers: {
+            Authorization: `${context.token}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(contato),
@@ -44,11 +93,12 @@ export async function createContato(
 
 export async function updateContato(
     contato: Contato,
-    api_url: string,
+    context: AppContextType,
 ): Promise<Contato> {
-    const response = await fetch(api_url + `/api/contatos/${contato.id}`, {
+    const response = await fetch(context.api + `/api/contatos/${contato.id}`, {
         method: 'PUT',
         headers: {
+            Authorization: `${context.token}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(contato),
@@ -59,21 +109,27 @@ export async function updateContato(
 
 export async function deleteContato(
     idAgenda: number,
-    api_url: string,
+    context: AppContextType,
 ): Promise<void> {
-    await fetch(api_url + `/api/contatos/${idAgenda}`, {
+    await fetch(context.api + `/api/contatos/${idAgenda}`, {
         method: 'DELETE',
+        headers: {
+            Authorization: `${context.token}`,
+        },
     });
 }
 
 export async function updateContatoImage(
     contatoId: number,
     file: File,
-    api_url: string,
+    context: AppContextType,
 ) {
     const formData = new FormData();
     formData.append('imagem', file);
-    fetch(api_url + `/api/contatos/${contatoId}/imagem`, {
+    fetch(context.api + `/api/contatos/${contatoId}/imagem`, {
+        headers: {
+            Authorization: `${context.token}`,
+        },
         method: 'PUT',
         body: formData,
     });
@@ -81,26 +137,30 @@ export async function updateContatoImage(
 
 export async function getContatos(
     idAgenda: number,
-    api_url: string,
+    context: AppContextType,
 ): Promise<Contato[]> {
-    const response = await fetch(api_url + `/api/contatos/${idAgenda}`);
+    const response = await fetch(context.api + `/api/contatos/${idAgenda}`, {
+        headers: {
+            Authorization: `${context.token}`,
+        },
+    });
     const contato = await response.json();
     return contato;
 }
 
 export async function createAgenda(
     agenda: Agenda,
-    api_url: string,
+    context: AppContextType,
 ): Promise<any> {
-    const response = await fetch(api_url + '/api/agenda', {
+    const response = await fetch(context.api + '/api/agenda', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `${context.token}`,
         },
         body: JSON.stringify(agenda),
     });
     if (!response.ok) {
-        console.log(response);
         throw new Error('Não foi possível criar a agenda');
     }
     return response.json();
@@ -108,12 +168,13 @@ export async function createAgenda(
 
 export async function updateAgenda(
     agenda: Agenda,
-    api_url: string,
+    context: AppContextType,
 ): Promise<Agenda | any> {
-    const response = await fetch(api_url + `/api/agenda/${agenda.id}`, {
+    const response = await fetch(context.api + `/api/agenda/${agenda.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
+            Authorization: `${context.token}`,
         },
         body: JSON.stringify(agenda),
     });
@@ -123,9 +184,15 @@ export async function updateAgenda(
     return response.json();
 }
 
-export async function deleteAgenda(id: type, api_url: string): Promise<any> {
-    const response = await fetch(api_url + `/api/agenda/${id}`, {
+export async function deleteAgenda(
+    id: number,
+    context: AppContextType,
+): Promise<any> {
+    const response = await fetch(context.api + `/api/agenda/${id}`, {
         method: 'DELETE',
+        headers: {
+            Authorization: `${context.token}`,
+        },
     });
     if (!response.ok) {
         throw new Error('Não foi possível deletar a agenda');

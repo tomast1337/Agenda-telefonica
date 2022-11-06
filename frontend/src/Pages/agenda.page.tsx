@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { AppContext, AppContextType } from '../app-context';
-import { Contato } from '~types';
+import { LinkButton } from '../components/form-componets';
 import { getContatos } from '../fetch-utils';
+import { Contato } from '../types';
 
 const ContatoCard = (props: { contato: Contato }) => {
     const { contato } = props;
@@ -26,12 +27,11 @@ const ContatoCard = (props: { contato: Contato }) => {
                             {contato.nome}
                         </h1>
                     </div>
-                    <Link
-                        className="bg-gray-300 rounded-md text-gray-600 hover:text-gray-700 hover:bg-gray-400 m-1 p-1"
+                    <LinkButton
                         to={`/agenda/${context.AgendaSelecionada?.id}/${contato.id}`}
                     >
                         Ver detalhes ou Editar
-                    </Link>
+                    </LinkButton>
                 </div>
             </li>
         </>
@@ -50,11 +50,10 @@ export const AgendaPage = () => {
         if (!context.AgendaSelecionada) {
             navigate('/');
         }
-        console.log('id', id);
         (async () => {
             try {
                 if (id) {
-                    const contatos = await getContatos(+id, context.api);
+                    const contatos = await getContatos(+id, context);
                     setContatos(contatos);
                 }
             } catch (error: any) {

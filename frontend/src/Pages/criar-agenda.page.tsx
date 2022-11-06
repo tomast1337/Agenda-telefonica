@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { createAgenda } from '../fetch-utils';
-import { AppContext, AppContextType } from '../app-context';
 import { Agenda } from '~types';
+import { AppContext, AppContextType } from '../app-context';
+import { createAgenda } from '../fetch-utils';
 
 export const CriarAgendaPage = () => {
     React.useEffect(() => {
@@ -19,7 +19,7 @@ export const CriarAgendaPage = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
-            await createAgenda({ nome, descricao } as Agenda, context.api);
+            await createAgenda({ nome, descricao } as Agenda, context);
             navigate('/');
         } catch (error: any) {
             setErro(error.message);
@@ -39,7 +39,7 @@ export const CriarAgendaPage = () => {
             >
                 <div className="flex flex-col w-1/2">
                     <label
-                        className="font-sans text-gray-700 text-sm"
+                        className="font-sans text-gray-700 text-xl"
                         htmlFor="nome"
                     >
                         Nome
