@@ -17,8 +17,12 @@ export class AuthService {
     }
 
     async verify(token: string): Promise<any> {
-        return this.jwtService.verify(token, {
-            secret: this.JWT_SECRET,
-        });
+        try {
+            return this.jwtService.verify(token, {
+                secret: this.JWT_SECRET,
+            });
+        } catch (error) {
+            return null;
+        }
     }
 }

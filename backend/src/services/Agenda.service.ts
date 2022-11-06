@@ -12,10 +12,11 @@ export class AgendaService {
         private contatoRepository: Repository<Contato>,
     ) {}
 
-    async findAll(): Promise<Agenda[]> {
+    async findAllOfUser(uuid: string): Promise<Agenda[]> {
         return await this.agendaRepository
             .createQueryBuilder('agenda')
             .leftJoinAndSelect('agenda.contatos', 'contatos')
+            .where('agenda.userUuid = :uuid', { uuid })
             .getMany();
     }
 
@@ -35,9 +36,14 @@ export class AgendaService {
         return await this.agendaRepository.save(toUpdate);
     }
 
-    async delete(id: number) {
+    async delete(id: number, userUuid: string) {
         const agenda = await this.agendaRepository.findOne({
-            where: { id },
+            where: {
+                id,
+                user: {
+                    uuid: userUuid,
+                },
+            },
         });
         // delete all contacts where agendaId = id
         await this.contatoRepository
@@ -50,11 +56,14 @@ export class AgendaService {
         return await this.agendaRepository.remove(agenda);
     }
 
-    async findOneById(id: number): Promise<Agenda> {
+    async findOneById(id: number, userUuid: string): Promise<Agenda> {
         return await this.agendaRepository
             .createQueryBuilder('agenda')
             .leftJoinAndSelect('agenda.contatos', 'contatos')
-            .where('agenda.id = :id', { id })
+            .where('agenda.id = :id AND agenda.userUuid = :uuid', {
+                id,
+                uuid: userUuid,
+            })
             .getOne();
     }
 }

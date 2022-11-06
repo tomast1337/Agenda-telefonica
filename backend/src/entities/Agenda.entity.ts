@@ -11,7 +11,9 @@ import { User } from './User.entity';
 export class Agenda {
     @PrimaryGeneratedColumn({ type: 'int' })
     id: number;
-    @ManyToOne((type) => User, (user) => user.agendas)
+    @ManyToOne((type) => User, (user) => user.agendas, {
+        cascade: true,
+    })
     user: User;
     @Column({
         length: 500,

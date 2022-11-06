@@ -11,13 +11,18 @@ export class LoggedMiddleware implements NestMiddleware {
         const token = req.headers.authorization;
         if (token) {
             // If token is valid, the user is logged
-            const user = this.authService.verify(token);
-            if (user) {
-                Logger.log(`Usuário ${user} está logado`);
-                req.body.loggedUser = user;
-                next();
-            } else {
-                Logger.log(`Usuário não logado`);
+            try {
+                this.authService
+                    .verify(token)
+                    .then((user) => {
+                        req.body.loggedUser = user;
+                        next();
+                    })
+                    .catch((err) => {
+                        Logger.error(err);
+                        res.status(401).json({ message: 'Token inválido' });
+                    });
+            } catch (error) {
                 res.status(401).json({ message: 'Token inválido' });
             }
         } else {
