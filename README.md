@@ -29,3 +29,16 @@
 - Saber explicar bem o código que fez e o motivo pelo qual fez daquele jeito (Terá uma apresentação).
 
 - Enviar o link do github até o dia 04/11 às 17h.
+
+# Para a execução desse desafio foi ultilizado:
+## FrontEnd
+- React
+- React Router Dom
+- Styled Components
+- Tailwind CSS
+
+## BackEnd
+- Nest.Js
+- AWS SDK
+- Type ORM
+- JWT Para authetificação
