@@ -1,6 +1,13 @@
 import { NavigateFunction } from 'react-router-dom';
 import { AppContextType } from './app-context';
 
+export function logout(navigate: NavigateFunction, appContext: AppContextType) {
+    appContext.AgendaSelecionada = null;
+    appContext.Contatos = [];
+    appContext.token = null;
+    navigate('/login');
+}
+
 export function verifyToken(context: AppContextType): boolean {
     const token = context.token;
     try {
@@ -23,6 +30,6 @@ export function tokenRedirect(
     if (!verifyToken(context)) {
         navigate('/');
     } else {
-        navigate('/agenda');
+        navigate('/agendas');
     }
 }

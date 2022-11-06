@@ -23,6 +23,11 @@ export const InputText = styled.input.attrs({
         'flex-auto text-3xl m-3 font-semibold focus:border-gray-500 border-2 border-gray-300 rounded-md',
 })``;
 
+export const TextArea = styled.textarea.attrs({
+    className:
+        'flex-auto text-3xl m-3 font-semibold focus:border-gray-500 border-2 border-gray-300 rounded-md h-64',
+})``;
+
 export const SubmitButton = styled.button.attrs({
     className:
         'flex-auto p-2 m-3 font-semibold text-4xl bg-black text-white rounded-md',
@@ -39,6 +44,7 @@ export const LinkButton = (props: {
             }}
             className="flex-auto p-2 m-3 font-semibold text-2xl bg-black text-white rounded-md text-center"
             to={props.to}
+            type="button"
         >
             {props.children}
         </Link>

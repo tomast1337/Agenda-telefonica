@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Container } from '../components/common-components';
 import { AppContext, AppContextType } from '../app-context';
 import {
     Form,
@@ -9,7 +10,7 @@ import {
     Label,
     LinkButton,
     SubmitButton,
-} from '../components/form-componets';
+} from '../components/form-components';
 import { createAccount } from '../fetch-utils';
 
 export const CriarContaPage = () => {
@@ -52,67 +53,63 @@ export const CriarContaPage = () => {
     };
 
     return (
-        <>
-            <div className="flex flex-col font-sans rounded-md shadow-2xl bg-gray-100 w-1/2 mx-auto">
-                <div className="flex-auto p-6">
+        <Container>
+            <div className="flex-auto p-6">
+                <FromGroup>
+                    <FormTitle> Criar Conta </FormTitle>
+                </FromGroup>
+                {error && (
+                    <div
+                        className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                        role="alert"
+                    >
+                        <span className="block sm:inline">{error}</span>
+                    </div>
+                )}
+                <Form onSubmit={handleSubmit}>
                     <FromGroup>
-                        <FormTitle> Criar Conta </FormTitle>
+                        <Label>Nome de Usuário</Label>
+                        <InputText
+                            type="text"
+                            value={login}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                            ) => setLogin(e.target.value)}
+                        />
                     </FromGroup>
-                    {error && (
-                        <div
-                            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                            role="alert"
-                        >
-                            <span className="block sm:inline">{error}</span>
-                        </div>
-                    )}
-                    <Form onSubmit={handleSubmit}>
-                        <FromGroup>
-                            <Label>Nome de Usuário</Label>
-                            <InputText
-                                type="text"
-                                value={login}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLInputElement>,
-                                ) => setLogin(e.target.value)}
-                            />
-                        </FromGroup>
-                        <FromGroup>
-                            <Label>Senha</Label>
-                            <InputText
-                                type="password"
-                                value={senha}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLInputElement>,
-                                ) => {
-                                    setSenha(e.target.value);
-                                }}
-                            />
-                        </FromGroup>
-                        <FromGroup>
-                            <Label>Confirmar Senha</Label>
-                            <InputText
-                                type="password"
-                                value={confirmSenha}
-                                onChange={(
-                                    e: React.ChangeEvent<HTMLInputElement>,
-                                ) => {
-                                    setConfirmSenha(e.target.value);
-                                }}
-                            />
-                        </FromGroup>
-                        <FromGroup>
-                            <SubmitButton type="submit">
-                                Criar Conta
-                            </SubmitButton>
-                        </FromGroup>
-                        <FromGroup>
-                            <Label>Já tem uma conta?</Label>
-                            <LinkButton to="/">Faça login</LinkButton>
-                        </FromGroup>
-                    </Form>
-                </div>
+                    <FromGroup>
+                        <Label>Senha</Label>
+                        <InputText
+                            type="password"
+                            value={senha}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                                setSenha(e.target.value);
+                            }}
+                        />
+                    </FromGroup>
+                    <FromGroup>
+                        <Label>Confirmar Senha</Label>
+                        <InputText
+                            type="password"
+                            value={confirmSenha}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>,
+                            ) => {
+                                setConfirmSenha(e.target.value);
+                            }}
+                        />
+                    </FromGroup>
+                    <FromGroup>
+                        <SubmitButton type="submit">Criar Conta</SubmitButton>
+                    </FromGroup>
+                    <FromGroup>
+                        <Label>Já tem uma conta?</Label>
+                        <LinkButton to="/">Faça login</LinkButton>
+                    </FromGroup>
+                </Form>
             </div>
-        </>
+        </Container>
     );
 };

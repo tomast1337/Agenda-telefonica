@@ -1,13 +1,23 @@
 import * as React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppContext, AppContextType } from '../app-context';
-import { LinkButton } from '../components/form-componets';
+import { LinkButton } from '../components/form-components';
 import { getContatos } from '../fetch-utils';
 import { Contato } from '../types';
+import * as md5 from 'md5';
+import {
+    ErroMessage,
+    InfoMessage,
+    PageHeader,
+} from '../components/common-components';
 
 const ContatoCard = (props: { contato: Contato }) => {
     const { contato } = props;
     const context: AppContextType = React.useContext(AppContext);
+    function hash(email: string) {
+        //md5 hash
+        return md5(email);
+    }
     return (
         <>
             <li className="flex font-sans rounded-md shadow-2xl bg-gray-100 w-1/2 my-2 mx-auto">
@@ -15,7 +25,9 @@ const ContatoCard = (props: { contato: Contato }) => {
                     <img
                         src={
                             contato.imagem ||
-                            'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'
+                            `https://www.gravatar.com/avatar/${hash(
+                                contato.email,
+                            )}?d=mp`
                         }
                         alt=""
                         className="absolute inset-0 w-full h-full object-cover rounded-t-md"
@@ -65,27 +77,22 @@ export const AgendaPage = () => {
 
     return (
         <>
-            <h1 className="text-center text-xl">{`Contatos da agenda ${context.AgendaSelecionada?.nome}`}</h1>
-            {loading && (
-                <p className="text-center text-lg text-gray-800">
-                    Carregando...
-                </p>
-            )}
-            {error && (
-                <p className="text-center text-lg text-red-700">{error}</p>
-            )}
-            {contatos &&
-                (contatos.length > 0 ? (
+            <PageHeader>{`Contatos da agenda ${context.AgendaSelecionada?.nome}`}</PageHeader>
+            {loading && <InfoMessage>Carregando...</InfoMessage>}
+            {error && <ErroMessage>{error}</ErroMessage>}
+            {contatos ? (
+                contatos.length > 0 ? (
                     <ul className="flex flex-col">
                         {contatos.map((contato) => (
                             <ContatoCard contato={contato} key={contato.id} />
                         ))}
                     </ul>
                 ) : (
-                    <p className="text-center text-lg text-gray-800">
-                        Nenhum contato encontrado
-                    </p>
-                ))}
+                    <ErroMessage>Nenhum contato encontrado</ErroMessage>
+                )
+            ) : (
+                <ErroMessage>Nenhum contato encontrado</ErroMessage>
+            )}
         </>
     );
 };

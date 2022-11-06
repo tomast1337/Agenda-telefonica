@@ -144,8 +144,8 @@ export async function getContatos(
             Authorization: `${context.token}`,
         },
     });
-    const contato = await response.json();
-    return contato;
+    const contatos = await response.json();
+    return contatos;
 }
 
 export async function createAgenda(

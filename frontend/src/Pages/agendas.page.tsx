@@ -1,5 +1,10 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+    PageHeader,
+    ErroMessage,
+    InfoMessage,
+} from '../components/common-components';
 import { AppContext, AppContextType } from '../app-context';
 import { getAgendas } from '../fetch-utils';
 import { Agenda } from '../types';
@@ -43,6 +48,9 @@ export const AgendasPage = () => {
                     const agendas = await getAgendas(context);
                     setAgendas(agendas);
                     setLoading(false);
+                    if (agendas.length === 0) {
+                        setError('Nenhuma agenda encontrada');
+                    }
                 } catch (error: any) {
                     setError(error.message);
                 }
@@ -52,19 +60,13 @@ export const AgendasPage = () => {
 
     return (
         <>
-            <h1 className="text-center text-xl">Lista Agendas</h1>
+            <PageHeader>Lista Agendas</PageHeader>
             <div className="flex flex-col align-center">
-                {loading && (
-                    <p className="text-center text-lg text-gray-800">
-                        Carregando...
-                    </p>
-                )}
-                {error && (
-                    <p className="text-center text-lg text-gray-800">
-                        Erro ao carregar agendas
-                    </p>
-                )}
                 <div className="flex flex-col space-y-8 my-8 mx-16">
+                    {loading && <InfoMessage>Carregando...</InfoMessage>}
+                    {error && (
+                        <ErroMessage> Erro ao carregar agendas </ErroMessage>
+                    )}
                     {agendas.length > 0 &&
                         agendas.map((agenda) => (
                             <AgendaDetail key={agenda.id} agenda={agenda} />
